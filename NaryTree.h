@@ -147,7 +147,6 @@ template<typename T>
 int NaryTree<T>::getSize(){
 	DynamicQueue<TreeNode<T>*> queue;
 	int counter = 0;
-
 	if (this->getRoot() != nullptr) {
 		queue.push(this->getRoot());
 		while (!queue.isEmpty()) {
