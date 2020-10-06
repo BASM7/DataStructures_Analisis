@@ -3,8 +3,66 @@
 #include "DynamicQueue.h"
 #include "NaryTree.h"
 
-int main() {
+#include <math.h>
 
+NaryTree<int> crearArbolKario(int hijos, int niveles, NaryTree<int> arbol) {
+	if (arbol.getSize() == 0) {
+
+		DynamicQueue<TreeNode<int>*> cola;
+
+		int etiqueta = 1;
+		arbol.setRoot(etiqueta);
+		
+		cola.push(arbol.getRoot());
+
+		int nivelActual = 2;
+		while (nivelActual <= niveles) {			
+			TreeNode<int>* temp = cola.pop();
+			for (int i = 0; i < hijos; i++) {
+				etiqueta++;
+				TreeNode<int>* nuevoNodo = arbol.add(temp, etiqueta);
+				if (nivelActual < niveles) {
+					cola.push(nuevoNodo);
+				}				
+			}
+			int nodoMaximoEnNivel = (pow(hijos, nivelActual) - 1) / (hijos - 1.0);
+			if (etiqueta == nodoMaximoEnNivel) {
+				nivelActual++;				
+			}
+		}
+	}
+	return arbol;
+}
+
+int cantHojasR(TreeNode<int>* nodo, NaryTree<int> arbol) {
+	int hojas = 0;
+	TreeNode<int>* temp = arbol.getMostLeftChild(nodo);
+	if (temp != nullptr) {
+		while (temp != nullptr) {
+			hojas = hojas + cantHojasR(temp, arbol);
+			temp = arbol.getRightSibling(temp);
+		}
+	}
+	else {
+		hojas = hojas + 1;
+	}
+	return hojas;
+}
+
+int cantHojas(NaryTree<int> arbol) {
+	return cantHojasR(arbol.getRoot(), arbol);
+}
+
+
+
+int main() {
+	NaryTree<int> test_tree;
+	test_tree = crearArbolKario(4, 2, test_tree);
+	std::cout << cantHojas(test_tree) << std::endl;
+
+	//std::cout << (pow(4, 1) - 1) / (4 - 1.0);
+
+	/*
 	NaryTree<int> tree;
 	tree.setRoot(2);
 	tree.add(tree.getRoot(), 3);
@@ -46,7 +104,7 @@ int main() {
 	//std::cout << tree.preOrderGetCantNodesOnLevel(3) << std::endl;
 	//std::cout << tree.preOrderGetCantNodesOnLevel(4) << std::endl;
 
-	std::cout << tree.getHeight(tree.getRoot()) << std::endl;
+	//std::cout << tree.getHeight(tree.getRoot()) << std::endl;
 
 	auto node3 = tree.getRoot()->children->getLast()->value->children->getFirst()->value;
 	
@@ -55,6 +113,10 @@ int main() {
 	std::cout << tree.getHeight(tree.getRoot()) << std::endl;
 	std::cout << tree.getHeight(node) << std::endl;
 	std::cout << tree.getHeight(node->children->getFirst()->value) << std::endl;
+
+	//std::cout << tree.getParent(node)->value << std::endl;
+	//std::cout << tree.getParent(node3)->value << std::endl;
+	*/
 
 	return 0;
 }
