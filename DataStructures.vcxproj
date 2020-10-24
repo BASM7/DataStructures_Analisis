@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="DynamicQueue.h" />
+    <ClInclude Include="NaryTreeA.h" />
     <ClInclude Include="PosList.h" />
     <ClInclude Include="NaryTree.h" />
   </ItemGroup>

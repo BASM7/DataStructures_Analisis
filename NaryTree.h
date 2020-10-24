@@ -1,7 +1,6 @@
 #pragma once
 #include "PosList.h"
 #include "DynamicQueue.h"
-#include <memory>
 
 /*
 Estructura del nodo del árbol n-ario. Tiene apuntador al padre y una lista simple de nodos como hijos.
@@ -83,16 +82,25 @@ TreeNode<T>* NaryTree<T>::getRightSibling(TreeNode<T>* ptr){
 	bool found = false;
 	TreeNode<T>* sibling = nullptr;
 	if (ptr != nullptr) {
-		ListNode<TreeNode<int>*>* temp = ptr->parent->children->getFirst();
-		while (temp != nullptr && !found) {
-			if (temp->value == ptr) {
-				if (ptr->parent->children->getNext(temp) != nullptr) {
-					sibling = ptr->parent->children->getNext(temp)->value;
+		DynamicQueue<TreeNode<T>*> queue;
+		queue.push(this->getRoot());
+		while (!queue.isEmpty() && !found) {
+			auto children = queue.top()->children;
+			auto child = children->getFirst();
+			while (child != nullptr && !found) {
+				if (ptr == child->value) {
 					found = true;
+					auto temp = children->getNext(child);
+					if (temp != nullptr) {
+						sibling = temp->value;
+					}
+				}
+				else {
+					queue.push(child->value);
+					child = children->getNext(child);
 				}
 			}
-			temp = ptr->parent->children->getNext(temp);
-		}		
+		}
 	}
 	return sibling;
 }

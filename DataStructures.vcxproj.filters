@@ -24,6 +24,9 @@
     <ClInclude Include="NaryTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NaryTreeA.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
