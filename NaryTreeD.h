@@ -135,7 +135,10 @@ TreeNode<T>* NaryTree<T>::getMostLeftChild(TreeNode<T>* ptr) {
 
 template<typename T>
 TreeNode<T>* NaryTree<T>::getRightSibling(TreeNode<T>* ptr) {
-	return ptr->rightSibling;
+	if (!ptr->nextFather) {
+		return ptr->rightSibling;
+	}
+	return nullptr;
 }
 
 template<typename T>
@@ -147,7 +150,7 @@ TreeNode<T>* NaryTree<T>::getParent(TreeNode<T>* ptr) {
 		while (!done && temp != nullptr) {
 			if (temp->nextFather) {
 				done = true;
-				parent = this->getRightSibling(temp);
+				parent = temp->rightSibling;
 			}
 			else {
 				temp = this->getRightSibling(temp);
