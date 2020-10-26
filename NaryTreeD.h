@@ -27,8 +27,19 @@ public:
 	}
 
 	virtual ~TreeNode() {
-		delete leftChild;
-		delete rightSibling;
+		if (this != nullptr) {
+			TreeNode<T>* first = this->leftChild;
+			if (first != nullptr) {
+				TreeNode<T>* next = first->rightSibling;
+				while (!first->nextFather) {
+					delete first;
+					first = next;
+					next = first->rightSibling;
+				}
+				std::cout << first->value;
+				delete first;
+			}
+		}
 	}
 
 };
@@ -47,9 +58,9 @@ public:
 	};
 
 
-	virtual ~NaryTree() {};
+	virtual ~NaryTree() { delete this->root; };// Done.
 
-	void clear() {}; //TODO.
+	void clear() { delete this;  }; //Done.
 	bool isEmpty() { return this->root; };//Done.
 	void add(TreeNode<T>* parent, T element); // Done.
 	void removeLeaf(TreeNode<T>* node); //TODO.
@@ -62,14 +73,9 @@ public:
 	int getValue(TreeNode<T>* ptr) { return ptr->value; }; //Done.
 	int getSizeOfChildren(TreeNode<T>* ptr); //Done.
 	bool isLeaf(TreeNode<T>* ptr) { return this->getSizeOfChildren(ptr) == 0; }; //Done.
-	int size();//
-
-	//DEBUG.
-	void printPreOrder();
-
+	int getSize();//.
+	int getSize(TreeNode<T>* ptr);
 };
-
-
 
 template<typename T>
 void NaryTree<T>::add(TreeNode<T>* parent, T element) {
@@ -90,24 +96,6 @@ void NaryTree<T>::add(TreeNode<T>* parent, T element) {
 
 template<typename T>
 void NaryTree<T>::removeLeaf(TreeNode<T>* node) {
-	TreeNode<T>* temp = node;
-	while (!temp->nextFather) {
-		temp = this->getRightSibling(temp);
-	}
-
-	bool done = false;
-	temp = this->getMostLeftChild(temp);
-	while (!done) {
-		if (this->getRightSibling(temp) == node) {
-			TreeNode<T>* toDelete = this->getRightSibling(temp);
-			temp->rightSibling = this->getRightSibling(toDelete);
-			delete toDelete;
-			done = true;
-		}
-		else {
-			temp = this->getRightSibling(temp);
-		}
-	}
 }
 
 template<typename T>
@@ -165,14 +153,21 @@ int NaryTree<T>::getSizeOfChildren(TreeNode<T>* ptr) {
 }
 
 template<typename T>
-int NaryTree<T>::size() {
+int NaryTree<T>::getSize() {
+	int count = this->getSize(this->getRoot());
+	return count;
+}
+
+template<typename T>
+int NaryTree<T>::getSize(TreeNode<T>* ptr) {
 	int count = 0;
-	if (this->getRoot() != nullptr) {
+	if (ptr != nullptr) {
 		count++;
-		TreeNode<T>* temp = this->getMostLeftChild(this->getRoot());
-		while (temp != nullptr) {
-			
+		auto temp = this->getMostLeftChild(ptr);
+		while (temp != ptr && temp != nullptr) {
+			count += this->getSize(temp);
+			temp = this->getRightSibling(temp);
 		}
 	}
-	return 0;
+	return count;
 }
