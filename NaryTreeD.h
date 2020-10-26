@@ -63,14 +63,14 @@ public:
 	void clear() { delete this;  }; //Done.
 	bool isEmpty() { return this->root; };//Done.
 	TreeNode<T>* add(TreeNode<T>* parent, T element); // Done.
-	void removeLeaf(TreeNode<T>* node); //TODO.
+	void removeLeaf(TreeNode<T>* node); //Done.
 	void setRoot(T element); //Done.
 	void setValue(TreeNode<T>* ptr, T element) { ptr->value = element; }; //Done.
 	TreeNode<T>* getMostLeftChild(TreeNode<T>* ptr); //Done.
 	TreeNode<T>* getRightSibling(TreeNode<T>* ptr); // Done.
 	TreeNode<T>* getRoot() { return this->root; }; //Done.
 	TreeNode<T>* getParent(TreeNode<T>* ptr);//Done.
-	int getValue(TreeNode<T>* ptr) { return ptr->value; }; //Done.
+	T getValue(TreeNode<T>* ptr) { return ptr->value; }; //Done.
 	int getSizeOfChildren(TreeNode<T>* ptr); //Done.
 	bool isLeaf(TreeNode<T>* ptr) { return this->getSizeOfChildren(ptr) == 0; }; //Done.
 	int getSize();//Done.
@@ -97,7 +97,29 @@ TreeNode<T>* NaryTree<T>::add(TreeNode<T>* parent, T element) {
 
 template<typename T>
 void NaryTree<T>::removeLeaf(TreeNode<T>* node) {
-
+	if (this->getRoot() != nullptr) {
+		auto temp = this->getMostLeftChild(this->getParent(node));
+		auto nextTemp = this->getRightSibling(temp);
+		if (temp == node) {
+			if (nextTemp != nullptr) {
+				this->getParent(node)->leftChild = nextTemp;
+				temp->rightSibling = nullptr;
+				delete temp;
+			}
+			else {
+				delete temp;
+			}
+		}
+		else {
+			while (nextTemp != node) {
+				temp = nextTemp;
+				nextTemp = this->getRightSibling(nextTemp);
+			}
+			temp->rightSibling = this->getRightSibling(nextTemp);
+			nextTemp->rightSibling = nullptr;
+			delete nextTemp;
+		}
+	}
 }
 
 template<typename T>
@@ -122,7 +144,7 @@ TreeNode<T>* NaryTree<T>::getParent(TreeNode<T>* ptr) {
 	if (this->root != nullptr) {
 		bool done = false;
 		TreeNode<T>* temp = ptr;
-		while (!done) {
+		while (!done && temp != nullptr) {
 			if (temp->nextFather) {
 				done = true;
 				parent = this->getRightSibling(temp);
