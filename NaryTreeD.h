@@ -82,11 +82,10 @@ TreeNode<T>* NaryTree<T>::add(TreeNode<T>* parent, T element) {
 	TreeNode<T>* newNode = nullptr;
 	if (this->getRoot() != nullptr) {
 		if (parent->leftChild != nullptr) {
-			newNode = new TreeNode<T>(this->getMostLeftChild(parent)->value, 
-			this->getRightSibling(getMostLeftChild(parent)), this->getMostLeftChild(parent)->nextFather);
-			this->getMostLeftChild(parent)->rightSibling = newNode;
-			this->getMostLeftChild(parent)->value = element;
-			this->getMostLeftChild(parent)->nextFather = false;
+			newNode = new TreeNode<T>(element, 0);
+			newNode->rightSibling = this->getMostLeftChild(parent);
+			parent->leftChild = newNode;
+
 		}
 		else {
 			newNode = new TreeNode<T>(element, parent, true);
