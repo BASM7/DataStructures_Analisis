@@ -62,7 +62,7 @@ public:
 
 	void clear() { delete this;  }; //Done.
 	bool isEmpty() { return this->root; };//Done.
-	void add(TreeNode<T>* parent, T element); // Done.
+	TreeNode<T>* add(TreeNode<T>* parent, T element); // Done.
 	void removeLeaf(TreeNode<T>* node); //TODO.
 	void setRoot(T element); //Done.
 	void setValue(TreeNode<T>* ptr, T element) { ptr->value = element; }; //Done.
@@ -73,29 +73,32 @@ public:
 	int getValue(TreeNode<T>* ptr) { return ptr->value; }; //Done.
 	int getSizeOfChildren(TreeNode<T>* ptr); //Done.
 	bool isLeaf(TreeNode<T>* ptr) { return this->getSizeOfChildren(ptr) == 0; }; //Done.
-	int getSize();//.
+	int getSize();//Done.
 	int getSize(TreeNode<T>* ptr);
 };
 
 template<typename T>
-void NaryTree<T>::add(TreeNode<T>* parent, T element) {
+TreeNode<T>* NaryTree<T>::add(TreeNode<T>* parent, T element) {
+	TreeNode<T>* newNode = nullptr;
 	if (this->getRoot() != nullptr) {
 		if (parent->leftChild != nullptr) {
-			TreeNode<T>* newNode = new TreeNode<T>(this->getMostLeftChild(parent)->value, 
-				this->getRightSibling(getMostLeftChild(parent)), this->getMostLeftChild(parent)->nextFather);
+			newNode = new TreeNode<T>(this->getMostLeftChild(parent)->value, 
+			this->getRightSibling(getMostLeftChild(parent)), this->getMostLeftChild(parent)->nextFather);
 			this->getMostLeftChild(parent)->rightSibling = newNode;
 			this->getMostLeftChild(parent)->value = element;
 			this->getMostLeftChild(parent)->nextFather = false;
 		}
 		else {
-			TreeNode<T>* newNode = new TreeNode<T>(element, parent, true);
+			newNode = new TreeNode<T>(element, parent, true);
 			parent->leftChild = newNode;
 		}
 	}
+	return newNode;
 }
 
 template<typename T>
 void NaryTree<T>::removeLeaf(TreeNode<T>* node) {
+
 }
 
 template<typename T>
