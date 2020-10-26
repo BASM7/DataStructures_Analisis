@@ -9,18 +9,18 @@ template<typename T>
 class TreeNode {
 public:
 	T value;
-	TreeNode<T>* parent;
-	PosList<TreeNode<T>*>* children;
+	TreeNode<T>* leftChild;
+	TreeNode<T>* RightSibling;
 
 	TreeNode() {
-		children = new PosList<TreeNode<T>*>();
-		this->parent = nullptr;
+		this->leftChild = nullptr;
+		this->RightSibling = nullptr;
 		this->value = NULL;
 	}
 
-	TreeNode(T element, TreeNode<T>* parent) {
-		children = new PosList<TreeNode<T>*>();
-		this->parent = parent;
+	TreeNode(T element) {
+		this->leftChild = nullptr;
+		this->RightSibling = nullptr;
 		this->value = element;
 	}
 

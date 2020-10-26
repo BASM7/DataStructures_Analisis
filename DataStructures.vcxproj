@@ -141,8 +141,11 @@
   <ItemGroup>
     <ClInclude Include="DynamicQueue.h" />
     <ClInclude Include="NaryTreeA.h" />
+    <ClInclude Include="NaryTreeC.h" />
+    <ClInclude Include="NaryTreeD.h" />
     <ClInclude Include="PosList.h" />
     <ClInclude Include="NaryTree.h" />
+    <ClInclude Include="Stack.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp" />

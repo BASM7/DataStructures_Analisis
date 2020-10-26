@@ -75,12 +75,20 @@ public:
 	TreeNode<T>* getMostLeftChild(TreeNode<T>* node);
 	TreeNode<T>* getRightSibling(TreeNode<T>* node);
 	TreeNode<T>* getRoot();
-	TreeNode<T>* getParent(TreeNode<T>* node) { return elements[node->getParentIndex]; };
+	TreeNode<T>* getParent(TreeNode<T>* node);
 	int getValue(TreeNode<T>* node);
 	int getSizeOfChildren(TreeNode<T>* node);
 	int getSize() { return numElements; };
 	bool isLeaf(TreeNode<T>* node);
 };
+
+template<typename T>
+TreeNode<T>* NaryTree<T>::getParent(TreeNode<T>* node) {
+	if (node != nullptr && node != this->getRoot()) {
+		return elements[node->getParentIndex()];
+	}
+	return nullptr;
+}
 
 template<typename T>
 TreeNode<T>* NaryTree<T>::add(TreeNode<T>* parent, T element) {

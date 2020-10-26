@@ -37,18 +37,8 @@ public:
 
 	virtual ~Stack() {};
 
-	int getCounter() {
-		return this->counter;
-	}
-
-	Node<T>* getTop() {
-		return Stack<T>::top;
-	}
-
-	T Top() {
-		return Stack<T>::top->value;
-	}
-
+	int getCounter() { return this->counter; };
+	Node<T>* getTop() { return this->top; };
 	void clear();
 	bool isEmpty() { return this->getTop() == nullptr; };
 	void push(T element);

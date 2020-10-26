@@ -1,8 +1,16 @@
 #include <iostream>
+#include <unordered_map> 
+#include <vector>
+#include <set>
+
 #include "PosList.h"
 #include "DynamicQueue.h"
-//#include "NaryTreeA.h"
-#include "NaryTree.h"
+#include "Stack.h"
+
+#include "NaryTreeA.h"
+//#include "NaryTreeC.h"
+//#include "NaryTreeD.h"
+//#include "NaryTree.h"
 
 #include <math.h>
 
@@ -54,7 +62,142 @@
 //	return cantHojasR(arbol.getRoot(), arbol);
 //}
 
+// Ejercicio 1.
+template<typename T>
+TreeNode<T>* getLeftSibling(NaryTree<T>* tree, TreeNode<T>* node) {
+	TreeNode<T>* leftSibling = nullptr;
+	if (node != nullptr) {
+		TreeNode<T>* parent = tree->getParent(node);
+		TreeNode<T>* temp = tree->getMostLeftChild(parent);
+		bool found = false;
+		while (temp != node && temp != nullptr && !found) {
+			auto rightSibling = tree->getRightSibling(temp);
+			if (rightSibling == node) {
+				leftSibling = temp;
+			}
+			temp = tree->getRightSibling(temp);
+		}
+	}
+	return leftSibling;
+}
 
+// Ejercicio 3.
+template<typename T>
+int getHeight(NaryTree<T>* tree, TreeNode<T>* node) {
+	if (node == nullptr || tree->isLeaf(node)) {
+		return 0;
+	}
+	int maxHeight = 0;
+	TreeNode<T>* child = tree->getMostLeftChild(node);
+	while (child != nullptr) {
+		int newHeight = getHeight(tree, child);
+		if (maxHeight < newHeight) {
+			maxHeight = newHeight;
+		}
+		child = tree->getRightSibling(child);
+	}
+	return maxHeight + 1;
+}
+
+// Ejercicio 4.
+template<typename T>
+int getDepth(NaryTree<T>* tree, TreeNode<T>* node) {
+	int count = 0;
+	if (node != nullptr) {
+		TreeNode<T>* parent = tree->getParent(node);
+		while (parent != nullptr) {
+			count++;
+			parent = tree->getParent(parent);
+		}
+	}
+	return count;
+}
+
+template<typename T>
+void preOrder(NaryTree<T>* tree, TreeNode<T>* node) {
+	std::cout << tree->getValue(node) << " ";
+	TreeNode<T>* child = tree->getMostLeftChild(node);
+	while (child != nullptr) {
+		preOrder(tree, child);
+		child = tree->getRightSibling(child);
+	}
+}
+
+template<typename T>
+void preOrderRec(NaryTree<T>* tree) {
+	preOrder(tree, tree->getRoot());
+}
+
+template<typename T>
+void preOrderStack(NaryTree<T>* tree) {
+	Stack<TreeNode<T>*> stack;	
+	Stack<TreeNode<T>*> auxStack;
+	stack.push(tree->getRoot());
+	while (!stack.isEmpty()) {
+		TreeNode<T>* current = stack.getTop()->value;
+		stack.pop();
+		std::cout << tree->getValue(current) << " ";
+
+		TreeNode<T>* child = tree->getMostLeftChild(current);		
+		while (child != nullptr) {
+			auxStack.push(child);
+			child = tree->getRightSibling(child);
+		}
+
+		while (!auxStack.isEmpty()) {
+			stack.push(auxStack.getTop()->value);
+			auxStack.pop();
+		}
+	}
+}
+
+template<typename T>
+bool hasRepeated(NaryTree<T>* tree) {
+	std::unordered_map<int, int> map;
+	DynamicQueue<TreeNode<int>*> queue;
+
+	if (tree->getRoot() != nullptr) {
+		TreeNode<int>* current = tree->getRoot();
+		queue.push(current);
+		while (!queue.isEmpty()) {
+			current = queue.pop();
+			if (map.find(tree->getValue(current)) == map.end()) {
+				map.insert(std::make_pair(tree->getValue(current), 0));
+			}
+			else {
+				return true;
+			}
+			TreeNode<int>* child = tree->getMostLeftChild(current);
+			while (child != nullptr) {
+				queue.push(child);
+				child = tree->getRightSibling(child);
+			}
+		}
+	}
+	return false;
+}
+
+// Ejercicio 12.
+template<typename T>
+bool search(NaryTree<T>* tree, TreeNode<T>* node, T element) {
+	bool find = false;
+	if (tree->getValue(node) == element) {
+		find = true;
+	}
+	else {
+		TreeNode<T>* child = tree->getMostLeftChild(node);
+		while (child != nullptr && !find) {
+			find = search(tree, child, element);
+			child = tree->getRightSibling(child);
+		}
+	}
+	return find;
+}
+
+template<typename T>
+bool search(NaryTree<T>* tree, T element) {
+	return search(tree, tree->getRoot(), element);
+}
 
 int main() {
 	//NaryTree<int>* test_tree = new NaryTree<int>(10);
@@ -63,75 +206,25 @@ int main() {
 	tree->setRoot(12);
 	auto node = tree->add(tree->getRoot(), 4);
 	auto node2 = tree->add(tree->getRoot(), 5);
-
 	auto node3 = tree->add(node2, 3);
+	auto node6 = tree->add(node2, 6);
+	auto node4 = tree->add(tree->getRoot(), 9);
+	auto node5 = tree->add(node3, 10);
+	auto node7 = tree->add(tree->getRoot(), 12);
 
-	std::cout << tree->getSize() << std::endl;
+	std::cout << tree->getValue(getLeftSibling(tree, node2)) << std::endl;
+	//std::cout << tree->getValue(tree->getMostLeftChild(tree->getRoot())) << std::endl;
+	//std::cout << getHeight(tree, node3) << std::endl;
+	//std::cout << getDepth(tree, node3) << std::endl;
+	//preOrderRec(tree);
+	//std::cout << " - " << std::endl;
+	//preOrderStack(tree);
 
-	//std::cout << tree->getParent(node)->value << std::endl;
-	//std::cout << tree->getParent(node2)->value << std::endl;
-	//std::cout << tree->getParent(tree->getRoot()) << std::endl;
 
-	//test_tree = crearArbolKario(4, 2, test_tree);
-	//std::cout << cantHojas(test_tree) << std::endl;
+	//std::cout << hasRepeated(tree) << std::endl;
 
-	//std::cout << (pow(4, 1) - 1) / (4 - 1.0);
-
-	/*
-	NaryTree<int> tree;
-	tree.setRoot(2);
-	tree.add(tree.getRoot(), 3);
-	tree.add(tree.getRoot(), 4);
-	tree.add(tree.getRoot(), 1);
-	tree.add(tree.getRoot(), 9);
-	tree.add(tree.getRoot(), 10);
-
-	auto node = tree.getRoot()->children->getFirst()->value;
-	auto node2 = tree.getRoot()->children->getLast()->value;
-	tree.add(node, 90);
-	tree.add(node, 45);
-	tree.add(node, 36);
-	tree.add(node, 12);
-
-	//std::cout << tree.getSize() << std::endl;
-
-	tree.add(node2, 15);
-	tree.add(node2, 11);
-	tree.add(node2, 28);
-
-	//std::cout << tree.getSize() << std::endl;
-
-	auto test = tree.getRoot()->children->getLast()->value;
-	//std::cout << ((tree.getRightSibling(test) == nullptr) ? -1 : tree.getRightSibling(test)->value) << std::endl;
-
-	//std::cout << ((tree.getParent(tree.getRoot()) == nullptr) ? -1 : tree.getParent(test)->value) << std::endl;
-	//std::cout << ((tree.getParent(test) == nullptr) ? -1 : tree.getParent(test)->value) << std::endl;
-	//std::cout << ((tree.getParent(node) == nullptr) ? -1 : tree.getParent(node)->value) << std::endl;
-
-	auto test2 = tree.getRoot()->children->getFirst()->value->children->getFirst()->value;	
-	//std::cout << ((tree.getParent(test2) == nullptr) ? -1 : tree.getParent(test2)->value) << std::endl;
-
-	//tree.printPreOrder();
-
-	//std::cout << tree.getSizeOfChildren(tree.getRoot()) << std::endl;
-	//std::cout << tree.preOrderGetCantNodesOnLevel(1) << std::endl;
-	//std::cout << tree.preOrderGetCantNodesOnLevel(2) << std::endl;
-	//std::cout << tree.preOrderGetCantNodesOnLevel(3) << std::endl;
-	//std::cout << tree.preOrderGetCantNodesOnLevel(4) << std::endl;
-
-	//std::cout << tree.getHeight(tree.getRoot()) << std::endl;
-
-	auto node3 = tree.getRoot()->children->getLast()->value->children->getFirst()->value;
-	
-	tree.add(node3, 56);
-
-	std::cout << tree.getHeight(tree.getRoot()) << std::endl;
-	std::cout << tree.getHeight(node) << std::endl;
-	std::cout << tree.getHeight(node->children->getFirst()->value) << std::endl;
-
-	//std::cout << tree.getParent(node)->value << std::endl;
-	//std::cout << tree.getParent(node3)->value << std::endl;
-	*/
+	std::cout << search(tree, 7) << std::endl;
+	//delete tree;
 
 	return 0;
 }
