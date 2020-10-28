@@ -1,6 +1,6 @@
 #pragma once
 
-int const SIZE = 30;
+int const SIZE_TREE = 30; //cambiar para probar arboles más grandes.
 
 template<typename T>
 class TreeNode {
@@ -57,7 +57,7 @@ public:
 
 template<typename T>
 class NaryTree {
-	TreeNode<T>* elements[SIZE];
+	TreeNode<T>* elements[SIZE_TREE];
 	int numElements;
 
 public:
@@ -92,7 +92,7 @@ TreeNode<T>* NaryTree<T>::getParent(TreeNode<T>* node) {
 
 template<typename T>
 TreeNode<T>* NaryTree<T>::add(TreeNode<T>* parent, T element) {
-	if (numElements < SIZE) {
+	if (numElements < SIZE_TREE) {
 		TreeNode<T>* newNode = new TreeNode<T>(element, parent->getIndex(), numElements);
 		elements[numElements] = newNode;
 		numElements++;
@@ -122,10 +122,12 @@ TreeNode<T>* NaryTree<T>::getRightSibling(TreeNode<T>* node) {
 
 template<typename T>
 TreeNode<T>* NaryTree<T>::getMostLeftChild(TreeNode<T>* node) {
-	int currentIndex = node->getIndex();
-	for (int i = currentIndex + 1; i < numElements; i++) {
-		if (elements[i]->getParentIndex() == currentIndex) {
-			return elements[i];
+	if (node != nullptr) {
+		int currentIndex = node->getIndex();
+		for (int i = currentIndex + 1; i < numElements; i++) {
+			if (elements[i]->getParentIndex() == currentIndex) {
+				return elements[i];
+			}
 		}
 	}
 	return nullptr;

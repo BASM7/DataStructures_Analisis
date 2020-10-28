@@ -61,7 +61,7 @@ public:
 	virtual ~NaryTree() { delete this->root; };// Done.
 
 	void clear() { delete this;  }; //Done.
-	bool isEmpty() { return this->root; };//Done.
+	bool isEmpty() { return this->root == nullptr; };//Done.
 	TreeNode<T>* add(TreeNode<T>* parent, T element); // Done.
 	void removeLeaf(TreeNode<T>* node); //Done.
 	void setRoot(T element); //Done.
@@ -97,7 +97,7 @@ TreeNode<T>* NaryTree<T>::add(TreeNode<T>* parent, T element) {
 
 template<typename T>
 void NaryTree<T>::removeLeaf(TreeNode<T>* node) {
-	if (this->getRoot() != nullptr) {
+	if (this->getRoot() != nullptr && this->getRoot() != node) {
 		auto temp = this->getMostLeftChild(this->getParent(node));
 		auto nextTemp = this->getRightSibling(temp);
 		if (temp == node) {
@@ -111,7 +111,7 @@ void NaryTree<T>::removeLeaf(TreeNode<T>* node) {
 			}
 		}
 		else {
-			while (nextTemp != node) {
+			while (nextTemp != node && nextTemp != nullptr) {
 				temp = nextTemp;
 				nextTemp = this->getRightSibling(nextTemp);
 			}
@@ -119,6 +119,9 @@ void NaryTree<T>::removeLeaf(TreeNode<T>* node) {
 			nextTemp->rightSibling = nullptr;
 			delete nextTemp;
 		}
+	}
+	else {
+		delete this;
 	}
 }
 
@@ -130,13 +133,18 @@ void NaryTree<T>::setRoot(T element) {
 
 template<typename T>
 TreeNode<T>* NaryTree<T>::getMostLeftChild(TreeNode<T>* ptr) {
-	return ptr->leftChild;
+	if (ptr != nullptr) {
+		return ptr->leftChild;
+	}
+	return nullptr;
 }
 
 template<typename T>
 TreeNode<T>* NaryTree<T>::getRightSibling(TreeNode<T>* ptr) {
-	if (!ptr->nextFather) {
-		return ptr->rightSibling;
+	if (ptr != nullptr) {
+		if (!ptr->nextFather) {
+			return ptr->rightSibling;
+		}
 	}
 	return nullptr;
 }
