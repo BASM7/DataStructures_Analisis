@@ -16,12 +16,14 @@
 #include "DynamicQueue.h"
 #include "Stack.h"
 
+#include "PosList.h"
+
 //#include "NaryTreeA.h"
 //#include "NaryTreeB.h"
 //#include "NaryTreeC.h"
 #include "NaryTreeD.h"
 
-std::map <std::string, NaryTree<int>*> listRegistry;
+std::map <std::string, NaryTree<int>*> treeRegistry;
 
 int randomInt(int min, int max) {
 	std::random_device rd;
@@ -358,10 +360,10 @@ void preOrderStack(NaryTree<T>* tree) {
 //Ejercicio 11.
 template<typename T>
 void levelsDynamicQueue(NaryTree<T>* tree) {
-	DynamicQueue<TreeNode<T>> queue;
+	DynamicQueue<TreeNode<T>*> queue;
 	queue.push(tree->getRoot());
 	while (!queue.isEmpty()) {
-		TreeNode<T> temp = tree->getMostLeftChild(queue.top());
+		TreeNode<T>* temp = tree->getMostLeftChild(queue.top());
 		while (temp != nullptr) {
 			queue.push(temp);
 			temp = tree->getRightSibling(temp);
@@ -389,33 +391,42 @@ bool search(NaryTree<T>* tree, TreeNode<T>* node, T element) {
 
 template<typename T>
 bool search(NaryTree<T>* tree, T element) {
-	return search(tree, tree->getRoot(), element);
+	if (!tree->isEmpty()) {
+		return search(tree, tree->getRoot(), element);
+	}
+	return false;
 }
 
 template<typename T>
 TreeNode<T>* searchNode(NaryTree<T>* tree, TreeNode<T>* node, T element) {
 	bool find = false;
+	TreeNode<T>* foundNode = nullptr;
 	if (tree->getValue(node) == element) {
+		foundNode = node;
 		find = true;
-		return node;
 	}
 	else {
 		TreeNode<T>* child = tree->getMostLeftChild(node);
 		while (child != nullptr && !find) {
-			find = searchNode(tree, child, element);
+			foundNode = searchNode(tree, child, element);
+			if (foundNode != nullptr)
+				find = true;
 			child = tree->getRightSibling(child);
 		}
 	}
-	return nullptr;
+	return foundNode;
 }
 
 template<typename T>
 TreeNode<T>* searchNode(NaryTree<T>* tree, T element) {
-	return searchNode(tree, tree->getRoot(), element);
+	if (!tree->isEmpty()) {
+		return searchNode(tree, tree->getRoot(), element);
+	}
+	return nullptr;
 }
 
 void printTreeNames() {
-	for (auto it = listRegistry.begin(); it != listRegistry.end(); ++it) {
+	for (auto it = treeRegistry.begin(); it != treeRegistry.end(); ++it) {
 		std::cout << "\t" << it->first << std::endl;
 	}
 }
@@ -434,9 +445,9 @@ void clear()
 template<typename T>
 TreeNode<T>* getValidNode(NaryTree<T>* tree, std::string message) {
 	TreeNode<T>* node = nullptr;
-	bool valid_parent = false;
+	bool valid = false;
 	int num;
-	while (!valid_parent) {
+	while (!valid) {
 		std::cout << message << std::endl;
 		std::cin >> num;
 		node = searchNode(tree, num);
@@ -444,7 +455,7 @@ TreeNode<T>* getValidNode(NaryTree<T>* tree, std::string message) {
 			std::cout << "\tNo se pudo encontrar ese valor..." << std::endl;
 		}
 		else {
-			valid_parent = true;
+			valid = true;
 		}
 	}
 	return node;
@@ -456,28 +467,34 @@ std::string getTreeName() {
 	while (!validName) {
 		std::cout << "\tIngrese el nombre del arbol: " << std::endl;
 		std::cin >> name;
-		if (!(listRegistry.find(name) == listRegistry.end())) {			
+		if (!(treeRegistry.find(name) == treeRegistry.end())) {			
 			validName = true;
 		}
 	}
 	return name;
 }
 
-int main() {
+void pressEnter() {
+	std::cout << "Ingrese Enter para continuar..." << std::endl;
+	_getch();
+}
+
+void showMenu() {
 
 	NaryTree<int>* tree = new NaryTree<int>();
 	tree->setRoot(12);
 	//tree->removeLeaf(tree->getRoot());
+	//std::cout << tree->getSize() << std::endl;
 
-	//auto node = tree->add(tree->getRoot(), 4);
-	//auto node2 = tree->add(tree->getRoot(), 5);
-	//auto node3 = tree->add(node2, 3);
-	//auto node6 = tree->add(node2, 6);
-	//auto node4 = tree->add(tree->getRoot(), 9);
-	//auto node5 = tree->add(node3, 10);
-	//auto node7 = tree->add(tree->getRoot(), 12);
+	auto node = tree->add(tree->getRoot(), 4);
+	auto node2 = tree->add(tree->getRoot(), 5);
+	auto node3 = tree->add(node2, 3);
+	auto node6 = tree->add(node2, 6);
+	auto node4 = tree->add(tree->getRoot(), 9);
+	auto node5 = tree->add(node3, 10);
+	auto node7 = tree->add(tree->getRoot(), 12);
 
-	listRegistry.insert({"arbol1", tree});
+	treeRegistry.insert({ "arbol1", tree });
 
 	setlocale(LC_ALL, "spanish");
 	SetConsoleCP(1252);
@@ -493,24 +510,25 @@ int main() {
 		std::cout << "| Arboles actuales:" << std::endl;
 		printTreeNames();
 		std::cout << "| =====================================================================" << std::endl;
-		std::cout << "| 1) Iniciar.\t\t14) HermanoIzquierdo." << std::endl;
-		std::cout << "| 2) Destruir.\t\t15) EtiquetasRepetidas." << std::endl;
-		std::cout << "| 3) Vaciar.\t\t16) Altura." << std::endl;
-		std::cout << "| 4) PonerRaiz.\t\t17) Profundidad." << std::endl;
-		std::cout << "| 5) AgregarHijo.\t18) ListarEtiquetasPreOrden." << std::endl;
-		std::cout << "| 6) BorrarHoja.\t19) ListarEtiquetasNiveles." << std::endl;
-		std::cout << "| 7) ModificarEtiqueta.\t20) Copiar." << std::endl;
-		std::cout << "| 8) Raiz.\t\t21) Iguales." << std::endl;
-		std::cout << "| 9) Padre.\t\t22) ListarPreOrdenRecursivo." << std::endl;
-		std::cout << "| 11) HijoMasIzquierdo.\t23) ListarPreOrdenPila." << std::endl;
-		std::cout << "| 12) HermanoDerecho.\t24) ListaNiveles." << std::endl;
-		std::cout << "| 13) Etiqueta.\t\t25) BuscarEtiqueta." << std::endl;
+		std::cout << "| 1) Iniciar.\t\t13) HermanoIzquierdo." << std::endl;
+		std::cout << "| 2) Destruir.\t\t14) EtiquetasRepetidas." << std::endl;
+		std::cout << "| 3) Vaciar.\t\t15) Altura." << std::endl;
+		std::cout << "| 4) PonerRaiz.\t\t16) Profundidad." << std::endl;
+		std::cout << "| 5) AgregarHijo.\t17) ListarEtiquetasPreOrden." << std::endl;
+		std::cout << "| 6) BorrarHoja.\t18) ListarEtiquetasNiveles." << std::endl;
+		std::cout << "| 7) ModificarEtiqueta.\t19) Copiar." << std::endl;
+		std::cout << "| 8) Raiz.\t\t20) Iguales." << std::endl;
+		std::cout << "| 9) Padre.\t\t21) ListarPreOrdenRecursivo." << std::endl;
+		std::cout << "| 10) HijoMasIzquierdo.\t22) ListarPreOrdenPila." << std::endl;
+		std::cout << "| 11) HermanoDerecho.\t23) ListaNiveles." << std::endl;
+		std::cout << "| 12) BuscarEtiqueta." << std::endl;
 		std::cout << std::endl;
 		std::cout << "| 0) Salir." << std::endl;
 		std::cout << "| =====================================================================" << std::endl;
 		std::cin >> option;
 
 		NaryTree<int>* temp_tree = new NaryTree<int>();
+		NaryTree<int>* temp_treeB = new NaryTree<int>();
 		TreeNode<int>* temp_node = nullptr;
 		int num = -1;
 		std::string name = "";
@@ -519,104 +537,215 @@ int main() {
 		{
 		case 0:
 			finished = true;
+
+			delete temp_tree;
+			delete temp_treeB;
+
 			break;
 		case 1:
 			std::cout << "\tNombre del arbol: " << std::endl;
 			std::cin >> name;
-			listRegistry.insert({ name, temp_tree });
+			treeRegistry.insert({ name, temp_tree });
+			pressEnter();
 			break;
 		case 2:
-			std::cin.get();
+			std::cout << "\tNombre del arbol: " << std::endl;
+			std::cin >> name;
+			
+			pressEnter();
 			break;
 		case 3:
-			std::cin.get();
+			temp_tree = treeRegistry.find(getTreeName())->second;
+			temp_tree->clear();
+			pressEnter();
 			break;
 		case 4:
-			temp_tree = listRegistry.find(getTreeName())->second;
+			temp_tree = treeRegistry.find(getTreeName())->second;
 			std::cout << "\tIngrese el valor: " << std::endl;
 			std::cin >> num;
 			temp_tree->setRoot(num);
 			break;
 		case 5:
 			//AgregarHijo.
-			temp_tree = listRegistry.find(getTreeName())->second;
+			temp_tree = treeRegistry.find(getTreeName())->second;
 			temp_node = getValidNode(temp_tree, "\tIngrese el valor del padre: ");
 			std::cout << "\t Agregando a: " << temp_tree->getValue(temp_node) << std::endl;
 			std::cout << "\tIngrese el valor: " << std::endl;
 			std::cin >> num;
 			temp_tree->add(temp_node, num);
-			_getch();
+			pressEnter();
 			break;
 		case 6:
 			//BorrarHoja.
-			temp_tree = listRegistry.find(getTreeName())->second;
+			temp_tree = treeRegistry.find(getTreeName())->second;
 			temp_node = getValidNode(temp_tree, "\tIngrese la hoja a borrar: ");
 			temp_tree->removeLeaf(temp_node);
 			break;
 		case 7:
 			//MoficarEtiqueta.
-			std::cin.get();
+			temp_tree = treeRegistry.find(getTreeName())->second;
+			temp_node = getValidNode(temp_tree, "\tIngrese el valor a cambiar: ");
+			std::cout << "\tIngrese el valor: " << std::endl;
+			std::cin >> num;
+			temp_tree->setValue(temp_node, num);
+			pressEnter();
 			break;
 		case 8:
 			// Obtener raiz.
-			temp_tree = listRegistry.find(getTreeName())->second;
+			temp_tree = treeRegistry.find(getTreeName())->second;
 			std::cout << "\t La raíz es: " << temp_tree->getValue(temp_tree->getRoot()) << std::endl;
-			_getch();
+			pressEnter();
 			break;
 		case 9:
+			//Padre
+			temp_tree = treeRegistry.find(getTreeName())->second;
+			temp_node = getValidNode(temp_tree, "\tIngrese el valor: ");
+			temp_node = temp_tree->getParent(temp_node);
+			if (temp_node == nullptr)
+				std::cout << "\t La raíz no tiene padre." << std::endl;
+			else
+				std::cout << "\t El padre es: " << temp_tree->getValue(temp_node) << std::endl;
+			pressEnter();
 			std::cin.get();
 			break;
 		case 10:
+			//HijoMasIzq
+			std::cout << "\tBúscando hijo más izquierdo..." << std::endl;
+			temp_tree = treeRegistry.find(getTreeName())->second;
+			temp_node = getValidNode(temp_tree, "\tIngrese el valor: ");
+			temp_node = temp_tree->getMostLeftChild(temp_node);
+			if (temp_node == nullptr)
+				std::cout << "\t El valor ingresado no tiene hijo más izquierdo." << std::endl;
+			else
+				std::cout << "\t El hijo más izquierdo es: " << temp_tree->getValue(temp_node) << std::endl;
+			pressEnter();
 			std::cin.get();
 			break;
 		case 11:
-			std::cin.get();
+			//BuscarHermanoDer			
+			std::cout << "\tBúscando hermano derecho..." << std::endl;
+			temp_tree = treeRegistry.find(getTreeName())->second;
+			temp_node = getValidNode(temp_tree, "\tIngrese el valor: ");
+			temp_node = temp_tree->getRightSibling(temp_node);
+			if (temp_node == nullptr)
+				std::cout << "\t El valor ingresado no tiene hermano derecho." << std::endl;
+			else
+				std::cout << "\t El hermano derecho es: " << temp_tree->getValue(temp_node) <<std::endl;
+			pressEnter();
 			break;
 		case 12:
-			std::cin.get();
+			//BuscarEtiqueta.
+			temp_tree = treeRegistry.find(getTreeName())->second;
+			std::cout << "\tIngrese el valor a buscar: " << std::endl;
+			std::cin >> num;
+			if (search(temp_tree, num))
+				std::cout << "\t El árbol si tiene ese valor." << std::endl;
+			else
+				std::cout << "\t El árbol no tiene ese valor." << std::endl;
+			pressEnter();
 			break;
 		case 13:
-			std::cin.get();
+			//Hermano Izq.
+			std::cout << "\tBúscando hermano izquierdo..." << std::endl;
+			temp_tree = treeRegistry.find(getTreeName())->second;
+			temp_node = getValidNode(temp_tree, "\tIngrese el valor: ");
+			temp_node = getLeftSibling(temp_tree, temp_node);
+			if (temp_node == nullptr)
+				std::cout << "\t El valor ingresado no tiene hermano izquierdo." << std::endl;
+			else
+				std::cout << "\t El hermano izquierdo es: " << temp_tree->getValue(temp_node) << std::endl;
+			pressEnter();
 			break;
 		case 14:
-			std::cin.get();
+			//EtiquetasRepetidas.
+			temp_tree = treeRegistry.find(getTreeName())->second;
+			if (hasRepeated(temp_tree))
+				std::cout << "\t El árbol si tiene valores repetidos." << std::endl;
+			else
+				std::cout << "\t El árbol no tiene valores repetidos." << std::endl;
+			pressEnter();
 			break;
 		case 15:
-			std::cin.get();
+			//Altura.
+			temp_tree = treeRegistry.find(getTreeName())->second;
+			temp_node = getValidNode(temp_tree, "\tIngrese el valor: ");
+			std::cout << "\t La altura de " << temp_tree->getValue(temp_node) << " es: " << getHeight(temp_tree, temp_node) << std::endl;
+			pressEnter();
 			break;
 		case 16:
-			std::cin.get();
+			//Profundidad.
+			temp_tree = treeRegistry.find(getTreeName())->second;
+			temp_node = getValidNode(temp_tree, "\tIngrese el valor: ");
+			std::cout << "\t La profundidad de " << temp_tree->getValue(temp_node) << " es: " << getDepth(temp_tree, temp_node) << std::endl;
+			pressEnter();
 			break;
 		case 17:
-			std::cin.get();
+			temp_tree = treeRegistry.find(getTreeName())->second;
+			std::cout << "\tIngrese el nivel a imprimir: " << std::endl;
+			std::cin >> num;
+			std::cout << "\t Valores en el nivel " << num << " son: ";
+			showLevelPreOrder(temp_tree, num);
+			std::cout << std::endl;
+			pressEnter();
 			break;
 		case 18:
-			std::cin.get();
+			//ListasNivelPorNiveles
+			temp_tree = treeRegistry.find(getTreeName())->second;
+			std::cout << "\tIngrese el nivel a imprimir: " << std::endl;
+			std::cin >> num;
+			std::cout << "\t Valores en el nivel "<< num <<" son: ";
+			showLevels(temp_tree, num);
+			std::cout << std::endl;
+			pressEnter();
 			break;
 		case 19:
-			std::cin.get();
+			//Copiar
+			std::cout << "\tPrimer árbol..." << std::endl;
+			temp_tree = treeRegistry.find(getTreeName())->second;
+			std::cout << "\Segundo árbol..." << std::endl;
+			temp_treeB = treeRegistry.find(getTreeName())->second;
+			copy(temp_tree, temp_treeB);
+			std::cout << "\t El árbol fue copiado." << std::endl;
+			pressEnter();
 			break;
 		case 20:
-			std::cin.get();
+			//Iguales
+			std::cout << "\tPrimer árbol..." << std::endl;
+			temp_tree = treeRegistry.find(getTreeName())->second;
+			std::cout << "\Segundo árbol..." << std::endl;
+			temp_treeB = treeRegistry.find(getTreeName())->second;
+			if (equals(temp_tree, temp_treeB))
+				std::cout << "\t Los árboles son iguales." << std::endl;
+			else
+				std::cout << "\t Los árboles no son iguales." << std::endl;
+			pressEnter();
 			break;
 		case 21:
-			std::cin.get();
-			break;
-		case 22:
 			//Listar preOrden Rec.
-			temp_tree = listRegistry.find(getTreeName())->second;
+			temp_tree = treeRegistry.find(getTreeName())->second;
 			std::cout << "\t El árbol es: ";
 			preOrderRec(temp_tree);
 			std::cout << std::endl;
-			_getch();
+			pressEnter();
+			break;
+		case 22:
+			//Listar Pila.
+			temp_tree = treeRegistry.find(getTreeName())->second;
+			std::cout << "\t El árbol es: ";
+			preOrderStack(temp_tree);
+			std::cout << std::endl;
+			pressEnter();
 			break;
 		case 23:
+			//Listar Cola.
+			temp_tree = treeRegistry.find(getTreeName())->second;
+			std::cout << "\t El árbol es: ";
+			levelsDynamicQueue(temp_tree);
+			std::cout << std::endl;
+			pressEnter();
 			std::cin.get();
 			break;
 		case 24:
-			std::cin.get();
-			break;
-		case 25:
 			std::cin.get();
 			break;
 		default:
@@ -625,43 +754,11 @@ int main() {
 
 	} while (!finished);
 
+}
 
-	//NaryTree<int>* treeC = new NaryTree<int>();
+int main() {	
 
-	//treeC = createRandomTree(treeC);
-	//preOrderRec(treeC);
-
-
-	//std::cout << tree->getValue(getLeftSibling(tree, node2)) << std::endl;
-	//std::cout << tree->getValue(tree->getMostLeftChild(tree->getRoot())) << std::endl;
-	//std::cout << getHeight(tree, node3) << std::endl;
-	//std::cout << getDepth(tree, node3) << std::endl;
-	//preOrderRec(tree);
-	//std::cout << " - " << std::endl;
-	//preOrderStack(tree);
-
-	//showLevelPreOrder(tree, 4);
-
-	//NaryTree<int>* treeB = new NaryTree<int>();
-	//treeB = copy(tree, treeB);
-
-	//preOrderStack(tree);
-	//std::cout << " - " << std::endl;
-	//preOrderRec(treeB);
-	//std::cout << std::endl;
-
-	//std::cout << equals(tree, treeB) << std::endl;
-
-	//std::cout << "c:" << treeB->getSizeOfChildren(treeB->getRoot()) << std::endl;
-
-	//auto nodeB = treeB->getRightSibling(treeB->getMostLeftChild(treeB->getRoot()));
-	//auto nodeB2 = treeB->getMostLeftChild(nodeB);
-	//std::cout << treeB->getValue(treeB->getParent(nodeB2)) << std::endl;
-
-	//std::cout << hasRepeated(tree) << std::endl;
-
-	//std::cout << search(tree, 7) << std::endl;
-	//delete tree;
+	showMenu();
 
 	return 0;
 }
