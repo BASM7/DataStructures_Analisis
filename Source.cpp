@@ -18,85 +18,12 @@
 
 #include "PosList.h"
 
-//#include "NaryTreeA.h"
+#include "NaryTreeA.h"
 //#include "NaryTreeB.h"
 //#include "NaryTreeC.h"
-#include "NaryTreeD.h"
+//#include "NaryTreeD.h"
 
 std::map <std::string, NaryTree<int>*> treeRegistry;
-
-int randomInt(int min, int max) {
-	std::random_device rd;
-	std::mt19937 mt(rd());
-	std::uniform_int_distribution<int> dist(min, max);
-	return dist(mt);
-}
-
-//template<typename T>
-//NaryTree<T>* createRandomTree(NaryTree<T>* tree) {
-//
-//	int levels = randomInt(9, 12);
-//	//int levels = 10;
-//
-//	std::cout << "l :" << levels << std::endl;
-//
-//	if (tree->getSize()) {
-//		DynamicQueue<TreeNode<T>*> queue;
-//		int label = randomInt(0, 100);
-//		tree->setRoot(label);		
-//		queue.push(tree->getRoot());
-//		int currentLevel = 2;
-//		int levelElements = 0;
-//		while (currentLevel <= levels) {			
-//			TreeNode<T>* temp = queue.pop();
-//			int children = randomInt(0, 3);
-//			levelElements = children;
-//			for (int i = 0; i < children; i++) {
-//				label = randomInt(0, 100);
-//				TreeNode<T>* newNode = tree->add(temp, label);
-//				queue.push(newNode);
-//			}
-//			levelElements--;
-//			if (levelElements == 0)
-//				currentLevel++;
-//		}
-//	}
-//	return tree;
-//}
-
-template<typename T>
-NaryTree<T>* createRandomTree(NaryTree<T>* tree) {
-	DynamicQueue<TreeNode<T>*> queue;
-	int levels = randomInt(9, 12);
-	tree->setRoot(randomInt(0, 100));
-	queue.push(tree->getRoot());
-
-	int level = 1;
-	int elementsLevel = 1;
-	int nextLevel = 0;
-
-	while (!queue.isEmpty() && level <= levels) {
-
-		int children = randomInt(1, 4);
-
-		for (int i = 0; i < children; i++) {
-			int label = randomInt(0, 100);
-			TreeNode<T>* newNode = tree->add(queue.top(), label);
-			queue.push(newNode);
-			nextLevel++;
-		}
-
-		queue.pop();
-		elementsLevel--;
-		if (elementsLevel == 0) {
-			level++;
-			elementsLevel = nextLevel;
-			nextLevel = 0;
-		}
-	}
-	queue.clear();
-	return tree;
-}
 
 // Ejercicio 1.
 template<typename T>
@@ -475,7 +402,7 @@ std::string getTreeName() {
 }
 
 void pressEnter() {
-	std::cout << "Ingrese Enter para continuar..." << std::endl;
+	std::cout << "\tIngrese Enter para continuar..." << std::endl;
 	_getch();
 }
 
@@ -483,8 +410,6 @@ void showMenu() {
 
 	NaryTree<int>* tree = new NaryTree<int>();
 	tree->setRoot(12);
-	//tree->removeLeaf(tree->getRoot());
-	//std::cout << tree->getSize() << std::endl;
 
 	auto node = tree->add(tree->getRoot(), 4);
 	auto node2 = tree->add(tree->getRoot(), 5);
@@ -521,7 +446,7 @@ void showMenu() {
 		std::cout << "| 9) Padre.\t\t21) ListarPreOrdenRecursivo." << std::endl;
 		std::cout << "| 10) HijoMasIzquierdo.\t22) ListarPreOrdenPila." << std::endl;
 		std::cout << "| 11) HermanoDerecho.\t23) ListaNiveles." << std::endl;
-		std::cout << "| 12) BuscarEtiqueta." << std::endl;
+		std::cout << "| 12) BuscarEtiqueta.\t24) NumElementos." << std::endl;
 		std::cout << std::endl;
 		std::cout << "| 0) Salir." << std::endl;
 		std::cout << "| =====================================================================" << std::endl;
@@ -551,8 +476,9 @@ void showMenu() {
 		case 2:
 			std::cout << "\tNombre del arbol: " << std::endl;
 			std::cin >> name;
-			
-			pressEnter();
+			temp_tree = treeRegistry.find(name)->second;
+			treeRegistry.erase(treeRegistry.find(name));
+			delete temp_tree;
 			break;
 		case 3:
 			temp_tree = treeRegistry.find(getTreeName())->second;
@@ -743,10 +669,11 @@ void showMenu() {
 			levelsDynamicQueue(temp_tree);
 			std::cout << std::endl;
 			pressEnter();
-			std::cin.get();
 			break;
 		case 24:
-			std::cin.get();
+			temp_tree = treeRegistry.find(getTreeName())->second;
+			std::cout << "\t La cantidad de elementos es: " << temp_tree->getSize() << std::endl;
+			pressEnter();
 			break;
 		default:
 			break;
