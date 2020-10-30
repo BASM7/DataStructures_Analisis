@@ -1,3 +1,10 @@
+/*
+*	TP1 - Analisis de Algoritmos.
+* @author B93986 Luis Alfonso Jiménez
+* @author B95346 Jesús Alonso Moreno Montero
+* @author B95092 Víctor Jesús Mora Abarca
+*/
+
 #pragma once
 
 template<typename T>
@@ -26,7 +33,8 @@ public:
 				while (first != nullptr) {
 					delete first;
 					first = next;
-					next = first->rightSibling;
+					if (next != nullptr)
+						next = first->rightSibling;
 				}
 				delete first;
 			}
@@ -51,8 +59,8 @@ public:
 
 	virtual ~NaryTree() { delete this->root; };// Done.
 
-	void clear() { delete this; }; //Done.
-	bool isEmpty() { return this->root; };//Done.
+	void clear() { root = nullptr; }; //Done.
+	bool isEmpty() { return this->root == nullptr; };//Done.
 	TreeNode<T>* add(TreeNode<T>* parent, T element); // Done.
 	void removeLeaf(TreeNode<T>* node); //.
 	void setRoot(T element); //Done.

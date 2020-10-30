@@ -1,3 +1,10 @@
+/*
+*	TP1 - Analisis de Algoritmos.
+* @author B93986 Luis Alfonso Jiménez
+* @author B95346 Jesús Alonso Moreno Montero
+* @author B95092 Víctor Jesús Mora Abarca
+*/
+
 #pragma once
 #include <iostream>
 template<typename T>

@@ -1,3 +1,10 @@
+/*
+*	TP1 - Analisis de Algoritmos.
+* @author B93986 Luis Alfonso Jiménez
+* @author B95346 Jesús Alonso Moreno Montero
+* @author B95092 Víctor Jesús Mora Abarca
+*/
+
 #pragma once
 #include <iostream>
 #include <memory>
@@ -30,7 +37,14 @@ public:
 		last = first;
 	}
 
-	virtual ~PosList() {};
+	virtual ~PosList() {
+		ListNode<T>* temp = nullptr;
+		while (temp != NULL) {
+			temp = first->next;
+			delete first;
+			first = temp;
+		}
+	};
 
 	ListNode<T>* getFirst() {
 		return this->first;
@@ -75,13 +89,14 @@ public:
 
 template<typename T>
 void PosList<T>::clear() {
-	ListNode<T>* temp = new ListNode<T>();
-	temp = this->getFirst();
-	while (temp != nullptr) {
-		this->setFirst(this->getNext(this->getFirst()));
-		delete temp;
-		temp = this->getFirst();
+	ListNode<T>* temp = nullptr;
+	while (temp != NULL) {
+		temp = first->next;
+		delete first;
+		first = temp;
 	}
+	first = nullptr;
+	last = first;
 }
 
 template <typename T>

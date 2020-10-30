@@ -21,9 +21,6 @@
     <ClInclude Include="DynamicQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NaryTree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="NaryTreeA.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -34,6 +31,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NaryTreeC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CircularQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NaryTreeB.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

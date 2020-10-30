@@ -1,3 +1,11 @@
+/*
+*	TP1 - Analisis de Algoritmos.
+* @author B93986 Luis Alfonso Jiménez 
+* @author B95346 Jesús Alonso Moreno Montero
+* @author B95092 Víctor Jesús Mora Abarca
+*/
+
+
 #include <iostream>
 
 #include <unordered_map>
@@ -13,13 +21,14 @@
 
 #include <conio.h>
 
-#include "DynamicQueue.h"
+#include "CircularQueue.h"		
+#include "DynamicQueue.h"	// Implementación de una cola dinámica para árboles donde se desconoce el tamaño.
 #include "Stack.h"
 
 #include "PosList.h"
 
-#include "NaryTreeA.h"
-//#include "NaryTreeB.h"
+//#include "NaryTreeA.h"
+#include "NaryTreeB.h"
 //#include "NaryTreeC.h"
 //#include "NaryTreeD.h"
 
@@ -408,18 +417,7 @@ void pressEnter() {
 
 void showMenu() {
 
-	NaryTree<int>* tree = new NaryTree<int>();
-	tree->setRoot(12);
-
-	auto node = tree->add(tree->getRoot(), 4);
-	auto node2 = tree->add(tree->getRoot(), 5);
-	auto node3 = tree->add(node2, 3);
-	auto node6 = tree->add(node2, 6);
-	auto node4 = tree->add(tree->getRoot(), 9);
-	auto node5 = tree->add(node3, 10);
-	auto node7 = tree->add(tree->getRoot(), 12);
-
-	treeRegistry.insert({ "arbol1", tree });
+	
 
 	setlocale(LC_ALL, "spanish");
 	SetConsoleCP(1252);
@@ -439,8 +437,8 @@ void showMenu() {
 		std::cout << "| 2) Destruir.\t\t14) EtiquetasRepetidas." << std::endl;
 		std::cout << "| 3) Vaciar.\t\t15) Altura." << std::endl;
 		std::cout << "| 4) PonerRaiz.\t\t16) Profundidad." << std::endl;
-		std::cout << "| 5) AgregarHijo.\t17) ListarEtiquetasPreOrden." << std::endl;
-		std::cout << "| 6) BorrarHoja.\t18) ListarEtiquetasNiveles." << std::endl;
+		std::cout << "| 5) AgregarHijo.\t17) ListarEtiquetasEnNivelRecPreOrden." << std::endl;
+		std::cout << "| 6) BorrarHoja.\t18) ListarEtiquetasEnNivelRecNiveles." << std::endl;
 		std::cout << "| 7) ModificarEtiqueta.\t19) Copiar." << std::endl;
 		std::cout << "| 8) Raiz.\t\t20) Iguales." << std::endl;
 		std::cout << "| 9) Padre.\t\t21) ListarPreOrdenRecursivo." << std::endl;
@@ -684,6 +682,22 @@ void showMenu() {
 }
 
 int main() {	
+
+	NaryTree<int>* tree = new NaryTree<int>();
+	tree->setRoot(12);
+
+	auto node = tree->add(tree->getRoot(), 4);
+	auto node2 = tree->add(tree->getRoot(), 5);
+	auto node3 = tree->add(node2, 3);
+	auto node6 = tree->add(node2, 6);
+	auto node4 = tree->add(tree->getRoot(), 9);
+	auto node5 = tree->add(node3, 10);
+	//auto node7 = tree->add(tree->getRoot(), 12);
+
+	//std::cout << tree->getValue(tree->getParent(node5)) << std::endl;
+	//std::cout << tree->getValue(tree->getRightSibling(node4)) << std::endl;
+
+	treeRegistry.insert({ "arbol1", tree });
 
 	showMenu();
 

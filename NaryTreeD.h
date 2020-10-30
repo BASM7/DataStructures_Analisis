@@ -1,3 +1,10 @@
+/*
+*	TP1 - Analisis de Algoritmos.
+* @author B93986 Luis Alfonso Jiménez
+* @author B95346 Jesús Alonso Moreno Montero
+* @author B95092 Víctor Jesús Mora Abarca
+*/
+
 #pragma once
 
 template<typename T>
@@ -60,7 +67,7 @@ public:
 
 	virtual ~NaryTree() { delete this->root; };// Done.
 
-	void clear() { delete this;  }; //Done.
+	void clear() { root = nullptr;  }; //Done.
 	bool isEmpty() { return this->root == nullptr; };//Done.
 	TreeNode<T>* add(TreeNode<T>* parent, T element); // Done.
 	void removeLeaf(TreeNode<T>* node); //Done.
@@ -68,14 +75,22 @@ public:
 	void setValue(TreeNode<T>* ptr, T element) { ptr->value = element; }; //Done.
 	TreeNode<T>* getMostLeftChild(TreeNode<T>* ptr); //Done.
 	TreeNode<T>* getRightSibling(TreeNode<T>* ptr); // Done.
-	TreeNode<T>* getRoot() { return this->root; }; //Done.
+	TreeNode<T>* getRoot() { return root; }; //Done.
 	TreeNode<T>* getParent(TreeNode<T>* ptr);//Done.
-	T getValue(TreeNode<T>* ptr) { return ptr->value; }; //Done.
+	T getValue(TreeNode<T>* ptr); //Done.
 	int getSizeOfChildren(TreeNode<T>* ptr); //Done.
-	bool isLeaf(TreeNode<T>* ptr) { return this->getSizeOfChildren(ptr) == 0; }; //Done.
+	bool isLeaf(TreeNode<T>* ptr) { return getSizeOfChildren(ptr) == 0; }; //Done.
 	int getSize();//Done.
 	int getSize(TreeNode<T>* ptr);
 };
+
+template<typename T>
+T NaryTree<T>::getValue(TreeNode<T>* ptr) {
+	if (ptr != nullptr) {
+		return ptr->value;
+	}
+	return NULL;
+}
 
 template<typename T>
 TreeNode<T>* NaryTree<T>::add(TreeNode<T>* parent, T element) {
@@ -85,7 +100,6 @@ TreeNode<T>* NaryTree<T>::add(TreeNode<T>* parent, T element) {
 			newNode = new TreeNode<T>(element, 0);
 			newNode->rightSibling = this->getMostLeftChild(parent);
 			parent->leftChild = newNode;
-
 		}
 		else {
 			newNode = new TreeNode<T>(element, parent, true);
@@ -121,7 +135,7 @@ void NaryTree<T>::removeLeaf(TreeNode<T>* node) {
 		}
 	}
 	else {
-		delete this;
+		this->root = nullptr;
 	}
 }
 
