@@ -1,3 +1,10 @@
+/*
+*	TP1 - Analisis de Algoritmos.
+* @author B93986 Luis Alfonso Jiménez
+* @author B95346 Jesús Alonso Moreno Montero
+* @author B95092 Víctor Jesús Mora Abarca
+*/
+
 #pragma once
 #include <iostream>
 
@@ -23,7 +30,7 @@ public:
 		this->child = nullptr;
 	}
 
-	virtual ~TreeNode() {
+	~TreeNode() {
 		delete nextElement;
 		delete child;
 	}
@@ -46,7 +53,7 @@ public:
 	}
 
 	virtual ~TreeCell() {
-		delete element;
+		//delete element;
 		delete next;
 	}
 };
@@ -179,62 +186,52 @@ void NaryTree<T>::setRoot(T element) {
 
 template<typename T>
 void NaryTree<T>::clear() {
-	TreeNode<T>* temp = getRoot();
-	while (temp->nextElement != nullptr) {
-		TreeCell<T>* temp2 = temp->child;
-		temp->child = nullptr;
-		while (temp2->next != nullptr) {
-			TreeCell<T>* toDelete = temp2->next;
-			temp2->next = temp2->next->next;
-			delete toDelete;
-		}
-		delete temp2;
-
-		TreeNode<T>* toDelete = temp;
-		root = temp->nextElement;
-		delete toDelete;
-	}
-	temp->value = NULL;
+	TreeNode<T>* temp_element = getRoot();
+	delete temp_element->nextElement;
+	delete temp_element->child;
+	root->value = NULL;
+	root = nullptr;
 	size = 0;
 }
 
 template<typename T>
 void NaryTree<T>::removeLeaf(TreeNode<T>* node) {
-	TreeNode<T>* temp = this->getRoot();
-	if (temp == node) {
-		temp = nullptr;
-	}
-	else {
-		bool done = false;
-		bool done2 = false;
-		TreeCell<T>* temp2 = temp->child;
-		while (temp != nullptr && !done) {
-			TreeNode<T>* toDelete = temp2->element;    //QUE PASA SI TEMP2 ES NULLPTR?
-			if (toDelete == node) {
-				temp->child = temp->child->next;
-				delete toDelete;
-				done2 = true;
-			}
-			else {
-				toDelete = temp2->element;
-				while (temp2 != nullptr && !done2) {
-					if (toDelete == node) {
-						temp2->next = temp2->next->next;
-						delete toDelete;
-						done2 = true;
+	TreeNode<T>* temp_element = nullptr;
+	TreeCell<T>* temp_child = nullptr;
+	if (!isEmpty() && node != nullptr && node != getRoot()) {
+		temp_element = getRoot();
+		if (temp_element != node) {
+			bool doneElement = false;
+			bool doneChild = false;
+			while (temp_element != nullptr && !doneElement) {
+				if (!doneChild && temp_element->child != nullptr) {
+					if (temp_element->child->element == node) {
+						TreeCell<T>* toDelete = temp_element->child;
+						temp_element->child = temp_element->child->next;
+						//delete toDelete;
+						doneChild = true;
 					}
 					else {
-						temp2 = temp2->next;
+						temp_child = temp_element->child;
 					}
 				}
-				if (temp->nextElement == node) {
-					TreeNode<T>* toDelete2 = temp->nextElement;
-					temp->nextElement = temp->nextElement->nextElement;
-					delete toDelete2;
-					done = true;
+				while (temp_child != nullptr && temp_child->next != nullptr && !doneChild) {
+					if (temp_child->next->element == node) {
+						TreeCell<T>* toDelete = temp_child->next;
+						temp_child->next = temp_child->next->next;
+						//delete toDelete;
+						doneChild = true;
+					}
+					temp_child = temp_child->next;
+				}
+				if (temp_element->nextElement == node) {
+					TreeNode<T>* toDelete = temp_element->nextElement;
+					temp_element->nextElement = temp_element->nextElement->nextElement;
+					//delete toDelete;
+					doneElement = true;
 				}
 				else {
-					temp = temp->nextElement;
+					temp_element = temp_element->nextElement;
 				}
 			}
 		}

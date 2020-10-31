@@ -26,7 +26,6 @@ public:
 
 template<typename T>
 void DynamicQueue<T>::clear() {
-	//ListNode<T>* temp = elements.getFirst();
 	elements.clear();
 }
 
