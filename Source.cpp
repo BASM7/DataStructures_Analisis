@@ -684,20 +684,20 @@ void showMenu() {
 int main() {	
 
 	NaryTree<int>* tree = new NaryTree<int>();
-	tree->setRoot(12);
+	//tree->setRoot(12);
 
-	auto node = tree->add(tree->getRoot(), 4);
-	auto node2 = tree->add(tree->getRoot(), 5);
-	auto node3 = tree->add(node2, 3);
-	auto node6 = tree->add(node2, 6);
-	auto node4 = tree->add(tree->getRoot(), 9);
-	auto node5 = tree->add(node3, 10);
+	//auto node = tree->add(tree->getRoot(), 4);
+	//auto node2 = tree->add(tree->getRoot(), 5);
+	//auto node3 = tree->add(node2, 3);
+	//auto node6 = tree->add(node2, 6);
+	//auto node4 = tree->add(tree->getRoot(), 9);
+	//auto node5 = tree->add(node3, 10);
 	//auto node7 = tree->add(tree->getRoot(), 12);
 
 	//std::cout << tree->getValue(tree->getParent(node5)) << std::endl;
 	//std::cout << tree->getValue(tree->getRightSibling(node4)) << std::endl;
 
-	treeRegistry.insert({ "arbol1", tree });
+	treeRegistry.insert({ "A1", tree });
 
 	showMenu();
 
