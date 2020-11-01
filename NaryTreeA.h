@@ -7,7 +7,7 @@
 
 #pragma once
 
-int const SIZE_TREE = 30; //cambiar para probar arboles más grandes.
+int const SIZE_TREE = 100000; //cambiar para probar arboles más grandes.
 
 template<typename T>
 class TreeNode {

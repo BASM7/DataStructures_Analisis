@@ -27,8 +27,8 @@
 
 #include "PosList.h"
 
-//#include "NaryTreeA.h"
-#include "NaryTreeB.h"
+#include "NaryTreeA.h"
+//#include "NaryTreeB.h"
 //#include "NaryTreeC.h"
 //#include "NaryTreeD.h"
 
@@ -702,4 +702,5 @@ int main() {
 	showMenu();
 
 	return 0;
+
 }
